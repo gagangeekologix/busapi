@@ -15,17 +15,26 @@ exports.findBusByStops = async (req, res) => {
     }
     console.log(fromStop._id, toStop._id)
 
-    const bus = await Bus.findOne({
-      
-      route: { $all: [fromStop._id, toStop._id] },
+    const busesWithRoute = await Bus.find({
+      route: {
+        $all: [fromStop._id, toStop._id],
+      },
     });
-    console.log(bus)
-    if (!bus) {
-      return res.status(404).json({ message: 'No bus found for the given stops' });
+    const filteredBuses = busesWithRoute.filter((bus) => {
+      const fromIndex = bus.route.indexOf(fromStop._id);
+      const toIndex = bus.route.indexOf(toStop._id);
+      return fromIndex !== -1 && toIndex !== -1 && fromIndex > toIndex;
+    });
+    if (filteredBuses.length === 0) {
+      return res.status(404).json({ message: 'No buses found for the given stops' });
+    }
+    if (filteredBuses.length === 0) {
+      return res.status(404).json({ message: 'No buses found for the given stops' });
     }
 
-    res.json({ busName: bus.name });
+    res.json({ buses: filteredBuses.map((bus) => bus.name) });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'Error retrieving bus information' });
   }
 }

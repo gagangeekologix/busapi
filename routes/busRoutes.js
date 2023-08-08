@@ -1,0 +1,11 @@
+const { findBusByStops } = require("../controllers/busController");
+const express = require("express");
+const router = express.Router();
+const busController = require('../controllers/busController');
+router.get('/bus/:from/:to', busController.findBusByStops);
+router.post('/buses', busController.createBus);
+router.get('/buses/:id', busController.getBus);
+router.put('/buses/:id', busController.updateBus);
+router.delete('/buses/:id', busController.deleteBus);
+router.get('/buses', busController.listBuses);
+module.exports = router;

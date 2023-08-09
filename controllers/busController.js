@@ -32,7 +32,7 @@ exports.findBusByStops = async (req, res) => {
       return res.status(404).json({ message: 'No buses found for the given stops' });
     }
 
-    res.json({ buses: filteredBuses.map((bus) => bus.name) });
+    res.json({ buses: filteredBuses.map((bus) => bus.name),id:filteredBuses.map((bus) => bus._id) });
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Error retrieving bus information' });

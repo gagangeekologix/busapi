@@ -50,13 +50,13 @@ exports.createBus = async (req, res) => {
 
 exports.getBus = async (req, res) => {
   try {
-    const bus = await Bus.findById(req.params.id);
+    const bus = await Bus.findById(req.params.id).populate('route', 'name');
     if (!bus) {
       return res.status(404).json({ message: 'Bus not found' });
     }
     res.json(bus);
   } catch (error) {
-    console.log(error)
+    console.error(error);
     res.status(500).json({ message: 'Error retrieving bus' });
   }
 };

@@ -15,7 +15,7 @@ exports.getBusStop = async (req, res) => {
   try {
     const busStop = await BusStop.findById(req.params.id);
     if (!busStop) {
-      return res.status(404).json({ message: 'Bus stop not found' });
+      return res.status(200).json({ message: 'Bus stop not found' });
     }
     res.json(busStop);
   } catch (error) {
@@ -30,7 +30,7 @@ exports.updateBusStop = async (req, res) => {
       { new: true }
     );
     if (!updatedBusStop) {
-      return res.status(404).json({ message: 'Bus stop not found' });
+      return res.status(200).json({ message: 'Bus stop not found' });
     }
     res.json(updatedBusStop);
   } catch (error) {
@@ -42,7 +42,7 @@ exports.deleteBusStop = async (req, res) => {
   try {
     const deletedBusStop = await BusStop.findByIdAndDelete(req.params.id);
     if (!deletedBusStop) {
-      return res.status(404).json({ message: 'Bus stop not found' });
+      return res.status(200).json({ message: 'Bus stop not found' });
     }
     res.json({ message: 'Bus stop deleted successfully' });
   } catch (error) {

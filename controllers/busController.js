@@ -11,7 +11,7 @@ exports.findBusByStops = async (req, res) => {
     const toStop = await BusStop.findOne({ name: toStopName });
     console.log(fromStop,toStop)
     if (!fromStop || !toStop) {
-      return res.status(404).json({ message: 'Bus stops not found' });
+      return res.status(200).json({ message: 'Bus stops not found' });
     }
     console.log(fromStop._id, toStop._id)
 
@@ -20,19 +20,18 @@ exports.findBusByStops = async (req, res) => {
         $all: [fromStop._id, toStop._id],
       },
     });
-    const filteredBuses = busesWithRoute.filter((bus) => {
-      const fromIndex = bus.route.indexOf(fromStop._id);
-      const toIndex = bus.route.indexOf(toStop._id);
-      return fromIndex !== -1 && toIndex !== -1 && fromIndex > toIndex;
-    });
-    if (filteredBuses.length === 0) {
-      return res.status(404).json({ message: 'No buses found for the given stops' });
-    }
-    if (filteredBuses.length === 0) {
-      return res.status(404).json({ message: 'No buses found for the given stops' });
+    // const filteredBuses = busesWithRoute.filter((bus) => {
+    //   const fromIndex = bus.route.indexOf(fromStop._id);
+    //   const toIndex = bus.route.indexOf(toStop._id);
+    //   return fromIndex !== -1 && toIndex !== -1 && fromIndex > toIndex;
+    // });
+    if (busesWithRoute.length === 0) {
+      return res.status(200).json({ message: 'No buses found for the given stops' });
     }
 
-    res.json({ buses: filteredBuses.map((bus) => bus.name),id:filteredBuses.map((bus) => bus._id) });
+    res.json({
+      buses: busesWithRoute.map((bus) => ({ id: bus._id, name: bus.name })),
+    });
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Error retrieving bus information' });
@@ -52,7 +51,7 @@ exports.getBus = async (req, res) => {
   try {
     const bus = await Bus.findById(req.params.id).populate('route', 'name');
     if (!bus) {
-      return res.status(404).json({ message: 'Bus not found' });
+      return res.status(200).json({ message: 'Bus not found' });
     }
     res.json(bus);
   } catch (error) {
@@ -67,7 +66,7 @@ exports.updateBus = async (req, res) => {
       new: true,
     });
     if (!updatedBus) {
-      return res.status(404).json({ message: 'Bus not found' });
+      return res.status(200).json({ message: 'Bus not found' });
     }
     res.json(updatedBus);
   } catch (error) {
@@ -79,7 +78,7 @@ exports.deleteBus = async (req, res) => {
   try {
     const deletedBus = await Bus.findByIdAndDelete(req.params.id);
     if (!deletedBus) {
-      return res.status(404).json({ message: 'Bus not found' });
+      return res.status(200).json({ message: 'Bus not found' });
     }
     res.json({ message: 'Bus deleted successfully' });
   } catch (error) {
